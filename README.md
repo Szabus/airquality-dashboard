@@ -57,10 +57,30 @@ This will save the latest data to `data/waqi_budapest.csv`.
 streamlit run src/app.py
 ```
 
+
 ### 7. Run tests
 ```bash
 pytest
 ```
+
+### 8. Measure test coverage
+Install coverage (ha még nincs):
+```bash
+pip install coverage
+```
+Futtasd a teszteket coverage-szel:
+```bash
+coverage run -m pytest
+```
+Jelentés a konzolra:
+```bash
+coverage report
+```
+HTML jelentés:
+```bash
+coverage html
+```
+Az eredmény a `htmlcov/index.html` fájlban böngészhető.
 
 ## CI/CD
 

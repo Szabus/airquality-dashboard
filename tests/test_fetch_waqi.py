@@ -1,3 +1,4 @@
+
 import pytest
 import pandas as pd
 from unittest.mock import patch, MagicMock
@@ -5,6 +6,15 @@ import sys
 import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
 from fetch_waqi import fetch_waqi_city
+
+@patch('fetch_waqi.load_dotenv')
+def test_fetch_waqi_city_no_token(mock_load_dotenv):
+	# Remove token if present
+	if "WAQI_API_TOKEN" in os.environ:
+		del os.environ["WAQI_API_TOKEN"]
+	with pytest.raises(RuntimeError) as excinfo:
+		fetch_waqi_city("Budapest")
+	assert "WAQI_API_TOKEN environment variable is not set" in str(excinfo.value)
 
 @patch('fetch_waqi.requests.get')
 @patch('fetch_waqi.pd.DataFrame.to_csv')
