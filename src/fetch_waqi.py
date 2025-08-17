@@ -31,5 +31,18 @@ def fetch_waqi_city(city="Budapest"):
 	print(f"Saved air quality data to {out_path}")
 	return df
 
+
+def fetch_waqi_cities(cities):
+	"""
+	Fetch and save air quality data for a list of cities.
+	"""
+	results = {}
+	for city in cities:
+		print(f"\nFetching data for {city}...")
+		df = fetch_waqi_city(city)
+		results[city] = df
+	return results
+
 if __name__ == "__main__":
-	fetch_waqi_city("Budapest")
+	cities = ["Budapest", "Vienna", "Beijing"]
+	fetch_waqi_cities(cities)
