@@ -7,6 +7,19 @@ import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
 from fetch_waqi import fetch_waqi_city
 
+@patch('fetch_waqi.requests.get')
+@patch('fetch_waqi.load_dotenv')
+@patch('builtins.print')
+@patch.dict(os.environ, {"WAQI_API_TOKEN": "dummy_token"})
+def test_fetch_waqi_city_no_data_print(mock_print, mock_load_dotenv, mock_get):
+	mock_response = MagicMock()
+	mock_response.json.return_value = {"status": "error"}
+	mock_response.raise_for_status = lambda: None
+	mock_get.return_value = mock_response
+	result = fetch_waqi_city("Nowhere")
+	assert result is None
+	mock_print.assert_any_call("No data found for city: Nowhere")
+
 @patch('fetch_waqi.load_dotenv')
 def test_fetch_waqi_city_no_token(mock_load_dotenv):
 	# Remove token if present
