@@ -26,4 +26,4 @@ jobs:
       env:
         WAQI_API_TOKEN: ${{ secrets.WAQI_API_TOKEN }}
       run: |
-        python src/fetch_openaq.py
+        python src/fetch_waqi.py
