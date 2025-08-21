@@ -6,12 +6,12 @@ import plotly.graph_objects as go
 def main():
     st.title("Air Quality Dashboard")
     data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
-    # Keressük meg az összes waqi_*.csv fájlt
+    # Find all waqi_*.csv files
     city_files = [f for f in os.listdir(data_dir) if f.startswith("waqi_") and f.endswith(".csv")]
     if not city_files:
         st.warning("No data files found. Please run fetch_waqi.py first!")
         return
-    # Városok listája a fájlnevekből
+    # List of cities from filenames
     cities = [f.replace("waqi_", "").replace(".csv", "").capitalize() for f in city_files]
     city_to_file = {c: f for c, f in zip(cities, city_files)}
     selected_city = st.selectbox("Select a city:", cities)
@@ -35,13 +35,13 @@ def main():
             except Exception:
                 return '#cccccc'
             if v < 25:
-                return '#4caf50'  # zöld
+                return '#4caf50'  # green
             elif v < 50:
-                return '#ffeb3b'  # sárga
+                return '#ffeb3b'  # yellow
             elif v < 100:
-                return '#ff9800'  # narancs
+                return '#ff9800'  # orange
             else:
-                return '#f44336'  # piros
+                return '#f44336'  # red
         colors = [color_picker(v) for v in chart_df['Value']]
         fig = go.Figure(data=[go.Bar(
             x=chart_df['Pollutant'],

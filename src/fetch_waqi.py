@@ -3,6 +3,7 @@ import requests
 import pandas as pd
 import os
 from dotenv import load_dotenv
+from datetime import datetime
 
 def fetch_waqi_city(city="Budapest"):
 	"""
@@ -24,9 +25,17 @@ def fetch_waqi_city(city="Budapest"):
 	print(f"Air quality for {city}:")
 	for k, v in iaqi.items():
 		print(f"  {k}: {v.get('v')}")
-	# Save all raw data to CSV
-	df = pd.DataFrame([{k: v.get('v') for k, v in iaqi.items()}])
+	# Prepare new row with timestamp (timezone-aware)
+	from datetime import UTC
+	row = {k: v.get('v') for k, v in iaqi.items()}
+	row['timestamp'] = datetime.now(UTC).isoformat()
 	out_path = os.path.join(os.path.dirname(__file__), "..", "data", f"waqi_{city.lower()}.csv")
+	# Append to CSV (or create if not exists)
+	if os.path.exists(out_path):
+		df = pd.read_csv(out_path)
+		df = pd.concat([df, pd.DataFrame([row])], ignore_index=True)
+	else:
+		df = pd.DataFrame([row])
 	df.to_csv(out_path, index=False)
 	print(f"Saved air quality data to {out_path}")
 	return df
