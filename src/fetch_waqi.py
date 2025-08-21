@@ -1,9 +1,10 @@
 
 import requests
-import pandas as pd
 import os
 from dotenv import load_dotenv
 from datetime import datetime
+from datetime import UTC
+import sqlite3
 
 def fetch_waqi_city(city="Budapest"):
 	"""
@@ -26,19 +27,38 @@ def fetch_waqi_city(city="Budapest"):
 	for k, v in iaqi.items():
 		print(f"  {k}: {v.get('v')}")
 	# Prepare new row with timestamp (timezone-aware)
-	from datetime import UTC
 	row = {k: v.get('v') for k, v in iaqi.items()}
+	row['city'] = city
 	row['timestamp'] = datetime.now(UTC).isoformat()
-	out_path = os.path.join(os.path.dirname(__file__), "..", "data", f"waqi_{city.lower()}.csv")
-	# Append to CSV (or create if not exists)
-	if os.path.exists(out_path):
-		df = pd.read_csv(out_path)
-		df = pd.concat([df, pd.DataFrame([row])], ignore_index=True)
-	else:
-		df = pd.DataFrame([row])
-	df.to_csv(out_path, index=False)
-	print(f"Saved air quality data to {out_path}")
-	return df
+	db_path = os.path.join(os.path.dirname(__file__), "..", "data", "waqi_data.db")
+	conn = sqlite3.connect(db_path)
+	columns = list(row.keys())
+	col_defs = ', '.join([f'"{col}" TEXT' for col in columns])
+	create_table_sql = f"""
+	CREATE TABLE IF NOT EXISTS air_quality (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		{col_defs}
+	)
+	"""
+	conn.execute(create_table_sql)
+
+	# Check for missing columns and add them if needed
+	existing_cols = set()
+	cursor = conn.execute("PRAGMA table_info(air_quality)")
+	for row_info in cursor.fetchall():
+		existing_cols.add(row_info[1])
+	for col in columns:
+		if col not in existing_cols:
+			alter_sql = f'ALTER TABLE air_quality ADD COLUMN "{col}" TEXT'
+			conn.execute(alter_sql)
+
+	placeholders = ', '.join(['?'] * len(columns))
+	insert_sql = f"INSERT INTO air_quality ({', '.join(columns)}) VALUES ({placeholders})"
+	conn.execute(insert_sql, [str(row[col]) for col in columns])
+	conn.commit()
+	conn.close()
+	print(f"Saved air quality data for {city} to {db_path}")
+	return row
 
 
 def fetch_waqi_cities(cities):

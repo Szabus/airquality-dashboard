@@ -1,28 +1,36 @@
 import streamlit as st
 import pandas as pd
 import os
+import sqlite3
 import plotly.graph_objects as go
 
 def main():
     st.title("Air Quality Dashboard")
-    data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
-    # Find all waqi_*.csv files
-    city_files = [f for f in os.listdir(data_dir) if f.startswith("waqi_") and f.endswith(".csv")]
-    if not city_files:
-        st.warning("No data files found. Please run fetch_waqi.py first!")
+
+    db_path = os.path.join(os.path.dirname(__file__), "..", "data", "waqi_data.db")
+    if not os.path.exists(db_path):
+        st.warning("No database found. Please run fetch_waqi.py first!")
         return
-    # List of cities from filenames
-    cities = [f.replace("waqi_", "").replace(".csv", "").capitalize() for f in city_files]
-    city_to_file = {c: f for c, f in zip(cities, city_files)}
+    conn = sqlite3.connect(db_path)
+    # Get all cities in the database
+    cities_query = "SELECT DISTINCT city FROM air_quality ORDER BY city"
+    cities = [row[0].capitalize() for row in conn.execute(cities_query).fetchall()]
+    if not cities:
+        st.warning("No data found in the database. Please run fetch_waqi.py first!")
+        conn.close()
+        return
     selected_city = st.selectbox("Select a city:", cities)
-    data_path = os.path.join(data_dir, city_to_file[selected_city])
-    df = pd.read_csv(data_path)
+    # Read all data for the selected city
+    df = pd.read_sql_query(f"SELECT * FROM air_quality WHERE city = ? ORDER BY timestamp DESC", conn, params=(selected_city.lower(),))
+    conn.close()
     st.write(f"Data for {selected_city} (first 10 rows):")
     st.dataframe(df.head(10))
 
-    st.subheader(f"Air quality values for {selected_city}")
+    st.subheader(f"Air quality values for {selected_city} (latest measurement)")
     if not df.empty:
-        values = df.iloc[0].to_dict()
+        # Exclude city, timestamp, id columns from pollutants
+        exclude_cols = {'city', 'timestamp', 'id'}
+        values = {k: v for k, v in df.iloc[0].to_dict().items() if k not in exclude_cols}
         chart_df = pd.DataFrame({
             'Pollutant': list(values.keys()),
             'Value': list(values.values())
