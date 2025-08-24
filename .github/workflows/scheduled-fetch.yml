@@ -29,6 +29,6 @@ jobs:
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git add git add data/airquality.db
+            git add data/waqi_data.db
           git commit -m 'Update air quality data [automated]' || echo "No changes to commit"
           git push
