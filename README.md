@@ -1,17 +1,25 @@
 
+
 # airquality-dashboard
 
-AirQuality Dashboard is a simple and intuitive Python app to monitor real-time air pollution levels in Budapest using the World Air Quality Index (WAQI) API. The project features automated data collection, a Streamlit dashboard, automated tests, and CI/CD with GitHub Actions.
+AirQuality Dashboard is a Python-based application that collects air quality data for multiple cities using the World Air Quality Index (WAQI) API and displays it on a Streamlit dashboard. Data is stored in an SQLite database, collection is automated (GitHub Actions), the project is tested, and can be run with Docker.
 
-## Features
 
-- **Live air quality data** for Budapest from the WAQI API
-- **Automated data fetch** and CSV export
-- **Streamlit dashboard** for easy visualization
-- **Unit tests** for data fetching logic (pytest)
-- **CI/CD**: Automated testing and data update on every push/PR (GitHub Actions)
+## Main Features
 
-## Setup
+- **Collect air quality data for multiple cities** (WAQI API)
+- **Automated data collection** once daily (7:00 UTC) via GitHub Actions
+- **SQLite database** (`data/waqi_data.db`) for storing measurements
+- **Streamlit dashboard**: city selection, colored bar charts, time series trends
+	- Compare multiple cities (if enabled)
+	- Download/export data (if enabled)
+	- Alerts/notifications (optional, if implemented)
+- **Unit tests** (pytest)
+- **CI/CD**: automated testing and data updates
+- **Code scanning**: CodeQL workflow for security/code quality (see Security tab on GitHub)
+- **Docker support**
+
+## Installation & Usage
 
 ### 1. Clone the repository
 ```bash
@@ -19,12 +27,12 @@ git clone https://github.com/Szabus/airquality-dashboard.git
 cd airquality-dashboard
 ```
 
-### 2. Create and activate a virtual environment (optional but recommended)
+### 2. Create a virtual environment (optional)
 ```bash
 python -m venv venv
-# On Windows:
+# Windows:
 venv\Scripts\activate
-# On Linux/macOS:
+# Linux/macOS:
 source venv/bin/activate
 ```
 
@@ -35,28 +43,24 @@ pip install -r requirements.txt
 
 ### 4. Set up your WAQI API token
 
-Register for a free API token at https://aqicn.org/data-platform/token/#/
+Register for a free API token: https://aqicn.org/data-platform/token/#/
 
-You can store your token in a `.env` file in the project root:
-```
-WAQI_API_TOKEN=your_token_here
-```
-Or set it as an environment variable:
+Set it as an environment variable (e.g. in `.env` or your shell):
 ```powershell
 $env:WAQI_API_TOKEN = "your_token_here"
 ```
 
-### 5. Fetch air quality data
+### 5. Manually fetch air quality data
 ```bash
 python src/fetch_waqi.py
 ```
-This will save the latest data to `data/waqi_budapest.csv`.
+Data will be saved to the `data/waqi_data.db` SQLite database.
 
 ### 6. Run the dashboard
 ```bash
 streamlit run src/app.py
 ```
-
+Select a city and view air quality data on colorful charts!
 
 ### 7. Run tests
 ```bash
@@ -64,35 +68,43 @@ pytest
 ```
 
 ### 8. Measure test coverage
-Install coverage (ha még nincs):
 ```bash
 pip install coverage
-```
-Futtasd a teszteket coverage-szel:
-```bash
 coverage run -m pytest
-```
-Jelentés a konzolra:
-```bash
 coverage report
-```
-HTML jelentés:
-```bash
 coverage html
 ```
-Az eredmény a `htmlcov/index.html` fájlban böngészhető.
+Results are viewable in `htmlcov/index.html`.
 
-## CI/CD
+### 9. Using Docker
+If a `Dockerfile` is present, build and run:
+```bash
+docker build -t airquality-dashboard .
+docker run -p 8501:8501 airquality-dashboard
+```
 
-GitHub Actions automatically runs tests and updates the data on every push and pull request for all branches. The WAQI API token must be set as a repository secret (`WAQI_API_TOKEN`) for CI to work.
 
-## Project structure
+## Automated Data Collection (GitHub Actions)
 
-- `src/fetch_waqi.py` – Fetches and saves air quality data from WAQI
-- `src/app.py` – Streamlit dashboard
-- `tests/test_fetch_waqi.py` – Unit tests for data fetching
+The `.github/workflows/scheduled-fetch.yml` workflow runs automatically once a day (7:00 UTC), updates the database, and commits changes. The WAQI API token must be set as a repo secret (`WAQI_API_TOKEN`).
+
+## Code Scanning & Security
+
+CodeQL analysis is enabled via GitHub Actions. Results and alerts can be viewed under the repository's **Security** → **Code scanning alerts** tab. This helps identify potential security and code quality issues automatically.
+
+## Project Structure
+
+- `src/fetch_waqi.py` – Data collection, SQLite handling, multi-city support
+- `src/app.py` – Streamlit dashboard, city selection, visualization
+- `data/waqi_data.db` – SQLite database with measurements
+- `tests/test_fetch_waqi.py` – Unit tests
 - `requirements.txt` – Python dependencies
-- `.github/workflows/python-app.yml` – CI/CD workflow
+- `.github/workflows/scheduled-fetch.yml` – Automated data collection workflow
+- `Dockerfile` – (optional) Docker support
+
+## Contributing
+
+Contributions, bug reports, and feature requests are welcome! Please open an issue or submit a pull request.
 
 ## License
 
