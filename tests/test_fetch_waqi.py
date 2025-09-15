@@ -1,22 +1,19 @@
-import tempfile
+import os
 import shutil
 import sqlite3
+import sys
+import tempfile
+from pathlib import Path
 
 # Test: fetch_waqi_city inserts into SQLite and adds new columns
-from unittest.mock import patch, MagicMock
-import os
-import tempfile
-import shutil
-from pathlib import Path
+from unittest.mock import MagicMock, patch
+
 import pytest
-from unittest.mock import patch, MagicMock
-import sys
-import os
 
 sys.path.insert(
     0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src"))
 )
-from fetch_waqi import fetch_waqi_city, fetch_waqi_cities
+from fetch_waqi import fetch_waqi_cities, fetch_waqi_city
 
 
 @patch("fetch_waqi.requests.get")

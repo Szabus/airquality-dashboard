@@ -1,9 +1,9 @@
-import requests
 import os
-from dotenv import load_dotenv
-from datetime import datetime
-from datetime import UTC
 import sqlite3
+from datetime import UTC, datetime
+
+import requests
+from dotenv import load_dotenv
 
 
 def fetch_waqi_city(city="Budapest"):
