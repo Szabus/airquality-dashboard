@@ -8,15 +8,14 @@ from unittest.mock import MagicMock, patch
 sys.path.insert(
     0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src"))
 )
-from fetch_waqi import fetch_waqi_cities
-
-
 import os
 import shutil
 import sqlite3
 import sys
 import tempfile
 from unittest.mock import MagicMock, patch
+
+from fetch_waqi import fetch_waqi_cities
 
 sys.path.insert(
     0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src"))
