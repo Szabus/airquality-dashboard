@@ -1,3 +1,19 @@
+## Deploy to Streamlit Community Cloud
+
+You can easily deploy this app for free using [Streamlit Community Cloud](https://streamlit.io/cloud):
+
+1. **Push your code to GitHub.**
+2. Go to [https://streamlit.io/cloud](https://streamlit.io/cloud) and sign in with your GitHub account.
+3. Click **'New app'** and select your repository.
+4. Set the main file path to `src/app.py`.
+5. In the **Advanced settings**, add your WAQI API token as a secret:
+	- Key: `WAQI_API_TOKEN`
+	- Value: your API token
+6. Click **'Deploy'**.
+
+Streamlit Cloud will automatically install dependencies from `requirements.txt` and launch your app. Each new commit to the repo will trigger a redeploy.
+
+**Note:** The app's SQLite database will reset on each redeploy or restart. For persistent data, consider using an external database or storage.
 
 
 # airquality-dashboard

@@ -73,5 +73,5 @@ def fetch_waqi_cities(cities):
 	return results
 
 if __name__ == "__main__":
-	cities = ["Budapest", "Vienna", "Beijing"]
+	cities = ["Budapest", "Debrecen", "Szeged", "Gyor", "Pecs"]
 	fetch_waqi_cities(cities)
