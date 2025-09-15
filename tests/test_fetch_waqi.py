@@ -11,6 +11,17 @@ sys.path.insert(
 from fetch_waqi import fetch_waqi_cities
 
 
+import os
+import shutil
+import sqlite3
+import sys
+import tempfile
+from unittest.mock import MagicMock, patch
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src")))
+from fetch_waqi import fetch_waqi_cities
+
+
 @patch("fetch_waqi.requests.get")
 @patch("fetch_waqi.load_dotenv")
 @patch.dict(os.environ, {"WAQI_API_TOKEN": "dummy_token"})

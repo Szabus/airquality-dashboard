@@ -14,9 +14,10 @@ def fetch_waqi_city(city="Budapest"):
     load_dotenv()
     token = os.environ.get("WAQI_API_TOKEN")
     if not token:
-        raise RuntimeError(
-            "WAQI_API_TOKEN environment variable is not set. Please set your WAQI API token in a .env file or as an environment variable."
-        )
+            raise RuntimeError(
+                "WAQI_API_TOKEN environment variable is not set. "
+                "Please set your WAQI API token in a .env file or as an environment variable."
+            )
     url = f"https://api.waqi.info/feed/{city}/?token={token}"
     response = requests.get(url)
     response.raise_for_status()
@@ -36,13 +37,13 @@ def fetch_waqi_city(city="Budapest"):
     conn = sqlite3.connect(db_path)
     columns = list(row.keys())
     col_defs = ", ".join([f'"{col}" TEXT' for col in columns])
-    create_table_sql = f"""
-	CREATE TABLE IF NOT EXISTS air_quality (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		{col_defs}
-	)
-	"""
-    conn.execute(create_table_sql)
+        create_table_sql = (
+            "CREATE TABLE IF NOT EXISTS air_quality ("
+            "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+            f"{col_defs}"
+            ")"
+        )
+        conn.execute(create_table_sql)
 
     # Check for missing columns and add them if needed
     existing_cols = set()

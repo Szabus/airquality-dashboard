@@ -29,7 +29,7 @@ def main():
         params=(selected_city.lower(),),
     )
     conn.close()
-    st.write(f"Data for {selected_city} (first 10 rows):")
+        st.write("Data for {} (first 10 rows):".format(selected_city))
     st.dataframe(df.head(10))
 
     st.subheader(f"Air quality values for {selected_city} (latest measurement)")
