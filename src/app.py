@@ -24,7 +24,7 @@ def main():
     selected_city = st.selectbox("Select a city:", cities)
     # Read all data for the selected city
     df = pd.read_sql_query(
-        f"SELECT * FROM air_quality WHERE city = ? ORDER BY timestamp DESC",
+        "SELECT * FROM air_quality WHERE city = ? ORDER BY timestamp DESC",
         conn,
         params=(selected_city.lower(),),
     )
