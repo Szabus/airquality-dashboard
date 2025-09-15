@@ -16,7 +16,8 @@ def fetch_waqi_city(city="Budapest"):
     if not token:
         raise RuntimeError(
             "WAQI_API_TOKEN environment variable is not set. "
-            "Please set your WAQI API token in a .env file or as an environment variable."
+            "Please set your WAQI API token in a .env file or"
+            " as an environment variable."
         )
     url = f"https://api.waqi.info/feed/{city}/?token={token}"
     response = requests.get(url)
