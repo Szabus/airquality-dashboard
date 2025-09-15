@@ -11,6 +11,7 @@ sys.path.insert(
     0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src"))
 )
 
+
 @patch("fetch_waqi.requests.get")
 @patch("fetch_waqi.load_dotenv")
 @patch.dict(os.environ, {"WAQI_API_TOKEN": "dummy_token"})
