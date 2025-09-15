@@ -1,19 +1,13 @@
+
 import os
 import shutil
 import sqlite3
 import sys
 import tempfile
-from pathlib import Path
-
-# Test: fetch_waqi_city inserts into SQLite and adds new columns
 from unittest.mock import MagicMock, patch
 
-import pytest
-
-sys.path.insert(
-    0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src"))
-)
-from fetch_waqi import fetch_waqi_cities, fetch_waqi_city
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src")))
+from fetch_waqi import fetch_waqi_cities
 
 
 @patch("fetch_waqi.requests.get")
@@ -40,6 +34,7 @@ def test_fetch_waqi_city_sqlite_insert_and_column_add(mock_load_dotenv, mock_get
         if args[-2:] == ("data", "waqi_data.db"):
             return db_path
         return orig_join(*args)
+
 
     with patch("os.path.join", side_effect=fake_join):
         from fetch_waqi import fetch_waqi_city
