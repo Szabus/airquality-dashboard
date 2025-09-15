@@ -4,3 +4,6 @@ requests
 python-dotenv
 streamlit
 plotly
+black
+isort
+flake8
