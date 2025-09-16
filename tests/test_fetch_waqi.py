@@ -5,7 +5,10 @@ import sys
 import tempfile
 from unittest.mock import MagicMock, patch
 
-from src.fetch_waqi import fetch_waqi_cities
+import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../src')))
+from fetch_waqi import fetch_waqi_cities
 
 sys.path.insert(
     0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src"))
