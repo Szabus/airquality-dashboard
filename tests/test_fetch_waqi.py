@@ -64,7 +64,7 @@ def test_fetch_waqi_city_sqlite_insert_and_column_add(mock_load_dotenv, mock_get
 def test_fetch_waqi_cities_calls_city_fetch(mock_fetch_city):
     # Mock return value for each city
     mock_fetch_city.side_effect = lambda city: f"data_for_{city}"
-    cities = ["Budapest", "Vienna", "Beijing"]
+    cities = ["Budapest", "Debrecen", "Szeged", "Gyor", "Pecs"]
     results = fetch_waqi_cities(cities)
     # Check that fetch_waqi_city was called for each city
     assert mock_fetch_city.call_count == len(cities)

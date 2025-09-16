@@ -26,7 +26,7 @@ def main():
     df = pd.read_sql_query(
         "SELECT * FROM air_quality WHERE city = ? ORDER BY timestamp DESC",
         conn,
-        params=(selected_city.lower(),),
+        params=(selected_city,),
     )
     conn.close()
     st.write("Data for {} (first 10 rows):".format(selected_city))
